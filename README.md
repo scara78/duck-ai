@@ -28,6 +28,34 @@ This stitches together free public AI services. That means:
 
 ## Quick start
 
+### Docker (recommended)
+
+```bash
+# Clone repo
+git clone https://github.com/nati48/duck-ai.git
+cd duck-ai
+
+# Build image
+docker build -t duck-ai .
+
+# Run container
+docker run -d \
+  -p 8788:8788 \
+  -e DUCK_AI_API_KEY=your-secret-key-here \
+  -e DEFAULT_MODEL=gpt-4o-mini \
+  --name duck-ai \
+  duck-ai
+
+# Or use docker-compose
+cp .env.example .env
+nano .env  # set your API key
+docker-compose up -d
+```
+
+**Easypanel / Dokku / Coolify:** Point to this repo, set `DUCK_AI_API_KEY` env var, expose port 8788.
+
+### Local Python
+
 ```bash
 git clone https://github.com/nati48/duck-ai.git
 cd duck-ai
@@ -137,6 +165,19 @@ All authenticated endpoints require `Authorization: Bearer <DUCK_AI_API_KEY>`.
 
 ---
 
+## Environment variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `DUCK_AI_API_KEY` | auto-generated | Your secret API key |
+| `DEFAULT_MODEL` | `gpt-4o-mini` | Model to use when client doesn't specify |
+| `BACKEND_ORDER` | `duckduckgo,pollinations` | Comma-separated backend priority |
+| `DUCK_PROXY` | – | Optional proxy for DuckDuckGo (format: `socks5://host:port` or `http://host:port`) |
+| `HOST` | `0.0.0.0` | Server bind address |
+| `PORT` | `8788` | Server port |
+
+---
+
 ## Project layout
 
 ```
@@ -146,6 +187,8 @@ duck-ai/
 │   ├── backends.py   # DuckDuckGo + Pollinations adapters & fallback logic
 │   ├── server.py     # FastAPI app
 │   └── cli.py        # Terminal client
+├── Dockerfile
+├── docker-compose.yml
 ├── requirements.txt
 ├── .env.example
 └── README.md

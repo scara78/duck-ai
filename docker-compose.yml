@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  duck-ai:
+    build: .
+    container_name: duck-ai
+    ports:
+      - "8788:8788"
+    environment:
+      - DUCK_AI_API_KEY=${DUCK_AI_API_KEY:-change-me-to-a-long-random-string}
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-gpt-4o-mini}
+      - BACKEND_ORDER=${BACKEND_ORDER:-duckduckgo,pollinations}
+      - DUCK_PROXY=${DUCK_PROXY:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8788/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
